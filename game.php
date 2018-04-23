@@ -62,11 +62,81 @@ function init_cards(){
 	return $cards;
 }
 
-function sum_up_hands($hands){
+function sum_up_hands($hands) {
 	$ace = 0;
 	$total = 0;
-	
+	foreach ($hands as $card) {
+		$num = $card['num'];
+		if($num > 10){
+			$total += 10;
+		} else if($num === 1) {
+			$ace++;
+			$total += 1;
+		} else {
+			$total += $num;
+		}
+	}
+	//Aの処理
+	if(!empty($ace)) {
+		$add = 10 * floor((21 - $total) / 10);
+		if($add > 0) $total += $add;
+	}
+	return $total;
 }
-
-
  ?>
+ <!DOCTYPE html>
+ <html lang="ja">
+ <head>
+ 	<meta charset="UTF-8">
+ 	<title>Black Jack</title>
+ </head>
+ <body>
+ 	<p>Your Hand:
+ 	<?php
+ 	foreach ($player as $card) {
+ 	 	echo $card['num'] . ' ';
+ 	 } 
+ 	 ?>	
+ 	 <br />
+ 	 Total:
+ 	 <?php 
+ 	 echo $player_total;
+ 	 if($player_total > 21) {
+ 	 	echo 'Burst';
+ 	 } else if($end_game === true && $player_total > $opp_total) {
+ 	 	echo 'Win';
+ 	 }
+ 	  ?>
+ 	</p>
+
+ 	<hr />
+
+ 	<p>Opponent's Hand:
+ 	<?php 
+ 	foreach ($opp as $card) {
+ 		echo $card['num'] . ' ';
+ 	}
+ 	?>
+ 	<br />
+ 	Total:
+ 	<?php
+ 	echo $opp_total;
+ 	if($opp_total > 21) {
+ 		echo "Burst";
+ 	} else if($end_game === true && $opp_total > $player_total){
+ 		echo "Win";
+ 	}
+ 	?>	
+ 	</p>
+
+ 	<hr />
+
+ 	<ul>
+ 		<?php if($end_game === false):?>
+ 		<li><a href="?hit">Hit</a></li>
+ 		<li><a href="?stand">Stand</a></li>
+ 		<?php endif;?>
+ 		<li><a href="?reset">Reset</a></li>
+ 	</ul>
+ </body>
+ </html>
